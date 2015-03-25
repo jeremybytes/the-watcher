@@ -1,0 +1,17 @@
+﻿<Window x:Class="Watcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="175" Width="400"
+        WindowStyle="None" AllowsTransparency="True" Topmost="True" 
+        Background="Transparent" ShowInTaskbar="False">
+    <Border BorderBrush="Black" BorderThickness="4"
+            MouseDown="Border_MouseDown"
+            CornerRadius="5">
+        <Grid>
+            <Image Source="Media/jason2.jpg" Stretch="UniformToFill" />
+            <TextBlock x:Name="J_sonTextBlock"
+                       Foreground="White" FontWeight="Bold" FontSize="32" 
+                       HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+        </Grid>
+    </Border>
+</Window>
