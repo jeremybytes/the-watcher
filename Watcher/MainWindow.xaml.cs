@@ -10,12 +10,12 @@ namespace Watcher
 {
     public partial class MainWindow : Window
     {
-        private TimeSpan showInterval = TimeSpan.FromSeconds(10);
-        private TimeSpan hideInterval = TimeSpan.FromMinutes(5);
+        //private TimeSpan showInterval = TimeSpan.FromSeconds(10);
+        //private TimeSpan hideInterval = TimeSpan.FromMinutes(5);
 
         // Intervals for easier testing
-        //private TimeSpan showInterval = TimeSpan.FromSeconds(3);
-        //private TimeSpan hideInterval = TimeSpan.FromSeconds(3);
+        private TimeSpan showInterval = TimeSpan.FromSeconds(3);
+        private TimeSpan hideInterval = TimeSpan.FromSeconds(3);
 
         private DispatcherTimer popupTimer;
         private int currentPhrase = 10;
@@ -57,16 +57,18 @@ namespace Watcher
 
         void charTimer_Tick(object sender, EventArgs e)
         {
-            if (Visibility == Visibility.Visible)
+            switch (Visibility)
             {
-                Visibility = Visibility.Collapsed;
-                popupTimer.Interval = hideInterval;
-            }
-            else
-            {
-                J_sonTextBlock.Text = GetNextPhrase();
-                Visibility = Visibility.Visible;
-                popupTimer.Interval = showInterval;
+                case Visibility.Collapsed:
+                case Visibility.Hidden:
+                    J_sonTextBlock.Text = GetNextPhrase();
+                    Visibility = Visibility.Visible;
+                    popupTimer.Interval = showInterval;
+                    break;
+                case Visibility.Visible:
+                    Visibility = Visibility.Collapsed;
+                    popupTimer.Interval = hideInterval;
+                    break;
             }
         }
 
