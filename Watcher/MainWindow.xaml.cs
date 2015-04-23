@@ -10,12 +10,12 @@ namespace Watcher
 {
     public partial class MainWindow : Window
     {
-        //private TimeSpan showInterval = TimeSpan.FromSeconds(10);
-        //private TimeSpan hideInterval = TimeSpan.FromMinutes(5);
+        private TimeSpan showInterval = TimeSpan.FromSeconds(10);
+        private TimeSpan hideInterval = TimeSpan.FromMinutes(5);
 
         // Intervals for easier testing
-        private TimeSpan showInterval = TimeSpan.FromSeconds(3);
-        private TimeSpan hideInterval = TimeSpan.FromSeconds(3);
+        //private TimeSpan showInterval = TimeSpan.FromSeconds(3);
+        //private TimeSpan hideInterval = TimeSpan.FromSeconds(3);
 
         private DispatcherTimer popupTimer;
         private int currentPhrase = 10;
