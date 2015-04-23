@@ -10,9 +10,16 @@ namespace Watcher
 {
     public partial class MainWindow : Window
     {
-        DispatcherTimer charTimer;
-        int currentPhrase = 10;
-        List<string> phrases = new List<string>
+        private TimeSpan showInterval = TimeSpan.FromSeconds(10);
+        private TimeSpan hideInterval = TimeSpan.FromMinutes(5);
+
+        // Intervals for easier testing
+        //private TimeSpan showInterval = TimeSpan.FromSeconds(3);
+        //private TimeSpan hideInterval = TimeSpan.FromSeconds(3);
+
+        private DispatcherTimer popupTimer;
+        private int currentPhrase = 10;
+        private List<string> phrases = new List<string>
         {
             "Json is watching you!",
             "I know where you live.",
@@ -33,37 +40,42 @@ namespace Watcher
         {
             // If process is already running, then kill this one
             if (Process.GetProcessesByName("Watcher").Count() > 1)
-                this.Close();
+                Close();
 
             // Get the screen width to set app location
             var screenWidth = SystemParameters.VirtualScreenWidth;
-            this.Left = screenWidth - 425;
-            this.Top = 50;
+            Left = screenWidth - 425;
+            Top = 50;
 
-            this.Visibility = Visibility.Collapsed;
+            Visibility = Visibility.Collapsed;
 
-            charTimer = new DispatcherTimer();
-            charTimer.Interval = new TimeSpan(0, 0, 5);
-            charTimer.Tick += charTimer_Tick;
-            charTimer.Start();
+            popupTimer = new DispatcherTimer();
+            popupTimer.Interval = TimeSpan.FromSeconds(5);
+            popupTimer.Tick += charTimer_Tick;
+            popupTimer.Start();
         }
 
         void charTimer_Tick(object sender, EventArgs e)
         {
-            if (this.Visibility == Visibility.Visible)
+            if (Visibility == Visibility.Visible)
             {
-                this.Visibility = Visibility.Collapsed;
-                charTimer.Interval = new TimeSpan(0, 5, 0);
+                Visibility = Visibility.Collapsed;
+                popupTimer.Interval = hideInterval;
             }
             else
             {
-                currentPhrase++;
-                if (currentPhrase > phrases.Count - 1)
-                    currentPhrase = 0;
-                J_sonTextBlock.Text = phrases[currentPhrase];
-                this.Visibility = Visibility.Visible;
-                charTimer.Interval = new TimeSpan(0, 0, 10);
+                J_sonTextBlock.Text = GetNextPhrase();
+                Visibility = Visibility.Visible;
+                popupTimer.Interval = showInterval;
             }
+        }
+
+        private string GetNextPhrase()
+        {
+            currentPhrase++;
+            if (currentPhrase > phrases.Count - 1)
+                currentPhrase = 0;
+            return phrases[currentPhrase];
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
