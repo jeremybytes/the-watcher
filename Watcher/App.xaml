@@ -1,6 +1,7 @@
-﻿<Application x:Class="Watcher.App"
+﻿<Application x:Class="watcher.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:watcher"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

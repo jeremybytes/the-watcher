@@ -1,86 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace Watcher
+namespace watcher;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    private DispatcherTimer charTimer;
+    private readonly TimeSpan startInterval = new(0, 0, 5);
+    private readonly TimeSpan showInterval = new(0, 0, 10);
+    private readonly TimeSpan gapInterval = new(0, 5, 0);
+
+    private int currentPhrase = 10;
+    private List<string> phrases = [
+        "Json is watching you!",
+        "I know where you live.",
+        "Dude, Seriously?",
+        "Urge to kill, rising.",
+        "Don't make me angry.",
+        "Json is not amused.",
+        "Ding Dong",
+    ];
+
+    public MainWindow()
     {
-        private TimeSpan showInterval = TimeSpan.FromSeconds(10);
-        private TimeSpan hideInterval = TimeSpan.FromMinutes(5);
+        InitializeComponent();
+        charTimer = new();
+        charTimer.Tick += charTimer_Tick;
+        charTimer.Interval = startInterval;
 
-        // Intervals for easier testing
-        //private TimeSpan showInterval = TimeSpan.FromSeconds(3);
-        //private TimeSpan hideInterval = TimeSpan.FromSeconds(3);
+        Loaded += MainWindow_Loaded;
+    }
 
-        private DispatcherTimer popupTimer;
-        private int currentPhrase = 10;
-        private List<string> phrases = new List<string>
+    void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        // If process is already running, then kill this one
+        if (Process.GetProcessesByName("Watcher").Count() > 1)
+            Close();
+
+        // Get the screen width and set app location
+        var screenWidth = SystemParameters.VirtualScreenWidth;
+        Left = screenWidth - 425;
+        Top = 50;
+
+        Visibility = Visibility.Collapsed;
+
+        charTimer.Start();
+    }
+
+    private void charTimer_Tick(object? sender, EventArgs e)
+    {
+        if (Visibility == Visibility.Visible)
         {
-            "Json is watching you!",
-            "I know where you live.",
-            "Dude, Seriously?",
-            "Urge to kill, rising.",
-            "Don't make me angry.",
-            "Json is not amused.",
-            "Ding Dong",
-        };
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            Loaded += MainWindow_Loaded;
-        }
-
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            // If process is already running, then kill this one
-            if (Process.GetProcessesByName("Watcher").Count() > 1)
-                Close();
-
-            // Get the screen width to set app location
-            var screenWidth = SystemParameters.VirtualScreenWidth;
-            Left = screenWidth - 425;
-            Top = 50;
-
+            charTimer.Interval = gapInterval;
             Visibility = Visibility.Collapsed;
-
-            popupTimer = new DispatcherTimer();
-            popupTimer.Interval = TimeSpan.FromSeconds(5);
-            popupTimer.Tick += charTimer_Tick;
-            popupTimer.Start();
         }
-
-        void charTimer_Tick(object sender, EventArgs e)
+        else
         {
-            if (Visibility == Visibility.Visible)
-            {
-                Visibility = Visibility.Collapsed;
-                popupTimer.Interval = hideInterval;
-            }
-            else
-            {
-                J_sonTextBlock.Text = GetNextPhrase();
-                Visibility = Visibility.Visible;
-                popupTimer.Interval = showInterval;
-            }
+            charTimer.Interval = showInterval;
+            J_sonTextBlock.Text = NextPhrase();
+            Visibility = Visibility.Visible;
         }
+    }
 
-        private string GetNextPhrase()
-        {
-            currentPhrase++;
-            if (currentPhrase > phrases.Count - 1)
-                currentPhrase = 0;
-            return phrases[currentPhrase];
-        }
+    private string NextPhrase()
+    {
+        currentPhrase++;
+        if (currentPhrase > phrases.Count - 1)
+            currentPhrase = 0;
+        return phrases[currentPhrase];
+    }
 
-        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
-        }
+    private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        DragMove();
     }
 }
