@@ -1,7 +1,7 @@
 # the-watcher
 All the incentive you need to write clean code
 
-This application is a companion to the presentation "Code is for Humans".
+This application is a companion to the presentation "[Code is for Humans](https://github.com/jeremybytes/code-is-for-humans)".
 
 Note: if you run the executable directly, you will need to kill the "Watcher" application in Task Manager. 
 There are no UI elements to exit the application directly.
